@@ -323,7 +323,7 @@ class WCClient {
         }
         if (!param.approved) {
           if(param.accounts==null){
-          onDisconnect?.call(WebSocketStatus.normalClosure,"Disconnected by dApp");
+          onDisconnect?.call(WebSocketStatus.noStatusReceived,"Disconnected by dApp");
           }
           killSession();
         }
