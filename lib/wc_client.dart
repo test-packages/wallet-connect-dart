@@ -318,8 +318,13 @@ class WCClient {
       case WCMethod.SESSION_UPDATE:
         final param = WCSessionUpdate.fromJson(request.params!.first);
         print('SESSION_UPDATE $param');
+        if(param.chainId!=null){
         onSessionUpdate?.call(request.id, param.chainId!);
+        }
         if (!param.approved) {
+          if(param.accounts==null){
+          onDisconnect?.call(WebSocketStatus.normalClosure,"Disconnected by dApp");
+          }
           killSession();
         }
         break;
