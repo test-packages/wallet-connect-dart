@@ -279,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () async {
@@ -300,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () {
@@ -337,7 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 TextButton(
                   style: TextButton.styleFrom(
-                    primary: Colors.white,
+                    foregroundColor: Colors.white,
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () {
@@ -378,7 +378,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 TextButton(
                   style: TextButton.styleFrom(
-                    primary: Colors.white,
+                    foregroundColor: Colors.white,
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () {
@@ -641,7 +641,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: onConfirm,
@@ -652,7 +652,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: onReject,
@@ -737,7 +737,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () async {
@@ -753,8 +753,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         final creds = EthPrivateKey.fromHex(privateKey);
                         final encodedMessage =
                             hexToBytes(ethereumSignMessage.data!);
-                        final signedData =
-                            await creds.signPersonalMessage(encodedMessage);
+                        final signedData = await creds
+                            .signPersonalMessageToUint8List(encodedMessage);
                         signedDataHex = bytesToHex(signedData, include0x: true);
                       }
                       debugPrint('SIGNED $signedDataHex');
@@ -771,7 +771,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () {
