@@ -12,6 +12,7 @@ class WCSessionStore {
   final WCPeerMeta remotePeerMeta;
   final int chainId;
   final String peerId;
+  final bool? isExtension;
   final String remotePeerId;
   WCSessionStore({
     required this.session,
@@ -19,6 +20,7 @@ class WCSessionStore {
     required this.remotePeerMeta,
     required this.chainId,
     required this.peerId,
+    this.isExtension,
     required this.remotePeerId,
   });
 
