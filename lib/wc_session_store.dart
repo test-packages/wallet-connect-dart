@@ -12,7 +12,7 @@ class WCSessionStore {
   final WCPeerMeta remotePeerMeta;
   final int chainId;
   final String peerId;
-  final bool? isExtension;
+  bool? isExtension;
   final String remotePeerId;
   WCSessionStore({
     required this.session,
