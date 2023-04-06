@@ -44,6 +44,7 @@ class WCClient {
   int? _chainId;
   String? _peerId;
   String? _remotePeerId;
+  bool? _isExtension;
   bool _isConnected = false;
 
   WCClient({
@@ -78,15 +79,18 @@ class WCClient {
   String? get peerId => _peerId;
 
   String? get remotePeerId => _remotePeerId;
+  bool? get isExtension => _isExtension;
 
   bool get isConnected => _isConnected;
 
   connectNewSession({
     required WCSession session,
     required WCPeerMeta peerMeta,
+    bool isExtension = false,
   }) {
     _connect(
       session: session,
+      isExtension: isExtension,
       peerMeta: peerMeta,
     );
   }
@@ -95,6 +99,7 @@ class WCClient {
     _connect(
       fromSessionStore: true,
       session: sessionStore.session,
+      isExtension: sessionStore.isExtension,
       peerMeta: sessionStore.peerMeta,
       remotePeerMeta: sessionStore.remotePeerMeta,
       peerId: sessionStore.peerId,
@@ -103,11 +108,11 @@ class WCClient {
     );
   }
 
-  WCSessionStore get sessionStore =>
-      WCSessionStore(
+  WCSessionStore get sessionStore => WCSessionStore(
         session: _session!,
         peerMeta: _peerMeta!,
         peerId: _peerId!,
+        isExtension: _isExtension!,
         remotePeerId: _remotePeerId!,
         remotePeerMeta: _remotePeerMeta!,
         chainId: _chainId!,
@@ -145,9 +150,7 @@ class WCClient {
       accounts: accounts,
     );
     final request = JsonRpcRequest(
-      id: DateTime
-          .now()
-          .millisecondsSinceEpoch,
+      id: DateTime.now().millisecondsSinceEpoch,
       method: WCMethod.SESSION_UPDATE,
       params: [param.toJson()],
     );
@@ -191,6 +194,7 @@ class WCClient {
   _connect({
     required WCSession session,
     required WCPeerMeta peerMeta,
+    required bool isExtension,
     bool fromSessionStore = false,
     WCPeerMeta? remotePeerMeta,
     String? peerId,
@@ -206,10 +210,11 @@ class WCClient {
     _peerMeta = peerMeta;
     _remotePeerMeta = remotePeerMeta;
     _peerId = peerId;
+    _isExtension = isExtension;
     _remotePeerId = remotePeerId;
     _chainId = chainId;
     final bridgeUri =
-    Uri.parse(session.bridge.replaceAll('https://', 'wss://'));
+        Uri.parse(session.bridge.replaceAll('https://', 'wss://'));
     _webSocket = WebSocketChannel.connect(bridgeUri);
     _isConnected = true;
     if (fromSessionStore) {
@@ -257,7 +262,7 @@ class WCClient {
 
   _listen() {
     _socketStream.listen(
-          (event) async {
+      (event) async {
         print('DATA: $event ${event.runtimeType}');
         final Map<String, dynamic> decoded = json.decode("$event");
         print('DECODED: $decoded ${decoded.runtimeType}');
@@ -283,7 +288,7 @@ class WCClient {
 
   Future<String> _decrypt(WCSocketMessage socketMessage) async {
     final payload =
-    WCEncryptionPayload.fromJson(jsonDecode(socketMessage.payload));
+        WCEncryptionPayload.fromJson(jsonDecode(socketMessage.payload));
     final decrypted = await WCCipher.decrypt(payload, _session!.key);
     print("DECRYPTED: $decrypted");
     return decrypted;
@@ -318,12 +323,13 @@ class WCClient {
       case WCMethod.SESSION_UPDATE:
         final param = WCSessionUpdate.fromJson(request.params!.first);
         print('SESSION_UPDATE $param');
-        if(param.chainId!=null){
-        onSessionUpdate?.call(request.id, param.chainId!);
+        if (param.chainId != null) {
+          onSessionUpdate?.call(request.id, param.chainId!);
         }
         if (!param.approved) {
-          if(param.accounts==null){
-          onDisconnect?.call(WebSocketStatus.noStatusReceived,"Disconnected by dApp");
+          if (param.accounts == null) {
+            onDisconnect?.call(
+                WebSocketStatus.noStatusReceived, "Disconnected by dApp");
           }
           killSession();
         }
