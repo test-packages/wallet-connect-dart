@@ -14,7 +14,7 @@ WCSessionStore _$WCSessionStoreFromJson(Map<String, dynamic> json) {
         WCPeerMeta.fromJson(json['remotePeerMeta'] as Map<String, dynamic>),
     chainId: json['chainId'] as int,
     peerId: json['peerId'] as String,
-    isExtension:json['isExtension'] as bool?,
+    isExtension:json['isExtension'] as bool,
     remotePeerId: json['remotePeerId'] as String,
   );
 }
