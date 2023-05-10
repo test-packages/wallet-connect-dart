@@ -9,6 +9,8 @@ class WCEthereumTransaction {
   final String? nonce;
   final String? gasPrice;
   final String? gas;
+  final String? maxPriorityFeePerGas;
+  final String? maxFeePerGas;
   final String? gasLimit;
   final String? value;
   final String data;
@@ -17,6 +19,8 @@ class WCEthereumTransaction {
     required this.to,
     this.nonce,
     this.gasPrice,
+    this.maxFeePerGas,
+    this.maxPriorityFeePerGas,
     required this.gas,
     this.gasLimit,
     this.value,
@@ -29,6 +33,6 @@ class WCEthereumTransaction {
 
   @override
   String toString() {
-    return 'WCEthereumTransaction(from: $from, to: $to, nonce: $nonce, gasPrice: $gasPrice, gas: $gas, gasLimit: $gasLimit, value: $value, data: $data)';
+    return 'WCEthereumTransaction(from: $from, to: $to, nonce: $nonce, gasPrice: $gasPrice, gas: $gas, maxPriorityFeePerGas: $maxPriorityFeePerGas,maxFeePerGas: $maxFeePerGas,gasLimit: $gasLimit, value: $value, data: $data)';
   }
 }
