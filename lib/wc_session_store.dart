@@ -12,6 +12,7 @@ class WCSessionStore {
   final WCPeerMeta remotePeerMeta;
   final int chainId;
   final String peerId;
+  bool isExtension;
   final String remotePeerId;
   WCSessionStore({
     required this.session,
@@ -19,6 +20,7 @@ class WCSessionStore {
     required this.remotePeerMeta,
     required this.chainId,
     required this.peerId,
+    required this.isExtension,
     required this.remotePeerId,
   });
 
@@ -28,7 +30,7 @@ class WCSessionStore {
 
   @override
   String toString() {
-    return 'WCSessionStore(session: $session, peerMeta: $peerMeta, peerId: $peerId, remotePeerId: $remotePeerId)';
+    return 'WCSessionStore(session: $session, peerMeta: $peerMeta, peerId: $peerId, remotePeerId: $remotePeerId,isExtension:$isExtension)';
   }
 
   @override

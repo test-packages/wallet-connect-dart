@@ -6,16 +6,18 @@ part of 'wc_session_store.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-WCSessionStore _$WCSessionStoreFromJson(Map<String, dynamic> json) =>
-    WCSessionStore(
-      session: WCSession.fromJson(json['session'] as Map<String, dynamic>),
-      peerMeta: WCPeerMeta.fromJson(json['peerMeta'] as Map<String, dynamic>),
-      remotePeerMeta:
-          WCPeerMeta.fromJson(json['remotePeerMeta'] as Map<String, dynamic>),
-      chainId: json['chainId'] as int,
-      peerId: json['peerId'] as String,
-      remotePeerId: json['remotePeerId'] as String,
-    );
+WCSessionStore _$WCSessionStoreFromJson(Map<String, dynamic> json) {
+  return WCSessionStore(
+    session: WCSession.fromJson(json['session'] as Map<String, dynamic>),
+    peerMeta: WCPeerMeta.fromJson(json['peerMeta'] as Map<String, dynamic>),
+    remotePeerMeta:
+        WCPeerMeta.fromJson(json['remotePeerMeta'] as Map<String, dynamic>),
+    chainId: json['chainId'] as int,
+    peerId: json['peerId'] as String,
+    isExtension: json['isExtension'] as bool,
+    remotePeerId: json['remotePeerId'] as String,
+  );
+}
 
 Map<String, dynamic> _$WCSessionStoreToJson(WCSessionStore instance) =>
     <String, dynamic>{
@@ -24,5 +26,6 @@ Map<String, dynamic> _$WCSessionStoreToJson(WCSessionStore instance) =>
       'remotePeerMeta': instance.remotePeerMeta,
       'chainId': instance.chainId,
       'peerId': instance.peerId,
+      'isExtension': instance.isExtension,
       'remotePeerId': instance.remotePeerId,
     };

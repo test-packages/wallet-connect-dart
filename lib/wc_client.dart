@@ -25,6 +25,7 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 typedef SessionRequest = void Function(int id, WCPeerMeta peerMeta);
+typedef SessionUpdate = void Function(int id, int chainId);
 typedef SocketError = void Function(dynamic message);
 typedef SocketClose = void Function(int? code, String? reason);
 typedef EthSign = void Function(int id, WCEthereumSignMessage message);
@@ -46,10 +47,12 @@ class WCClient {
   int? _chainId;
   String? _peerId;
   String? _remotePeerId;
+  bool? _isExtension;
   bool _isConnected = false;
 
   WCClient({
     this.onSessionRequest,
+    this.onSessionUpdate,
     this.onFailure,
     this.onDisconnect,
     this.onEthSign,
@@ -61,6 +64,7 @@ class WCClient {
   });
 
   final SessionRequest? onSessionRequest;
+  final SessionUpdate? onSessionUpdate;
   final SocketError? onFailure;
   final SocketClose? onDisconnect;
   final EthSign? onEthSign;
@@ -80,6 +84,7 @@ class WCClient {
   String? get peerId => _peerId;
 
   String? get remotePeerId => _remotePeerId;
+  bool? get isExtension => _isExtension;
 
   bool get isConnected => _isConnected;
 
@@ -87,9 +92,11 @@ class WCClient {
     required WCSession session,
     required WCPeerMeta peerMeta,
     HttpClient? customHttpClient,
-  }) async {
-    await _connect(
+    bool isExtension = false,
+  }) {
+    _connect(
       session: session,
+      isExtension: isExtension,
       peerMeta: peerMeta,
       customClient: customHttpClient,
     );
@@ -102,6 +109,7 @@ class WCClient {
     await _connect(
       fromSessionStore: true,
       session: sessionStore.session,
+      isExtension: sessionStore.isExtension,
       peerMeta: sessionStore.peerMeta,
       remotePeerMeta: sessionStore.remotePeerMeta,
       peerId: sessionStore.peerId,
@@ -115,6 +123,7 @@ class WCClient {
         session: _session!,
         peerMeta: _peerMeta!,
         peerId: _peerId!,
+        isExtension: _isExtension!,
         remotePeerId: _remotePeerId!,
         remotePeerMeta: _remotePeerMeta!,
         chainId: _chainId!,
@@ -197,6 +206,7 @@ class WCClient {
   _connect({
     required WCSession session,
     required WCPeerMeta peerMeta,
+    required bool isExtension,
     bool fromSessionStore = false,
     WCPeerMeta? remotePeerMeta,
     String? peerId,
@@ -213,6 +223,7 @@ class WCClient {
     _peerMeta = peerMeta;
     _remotePeerMeta = remotePeerMeta;
     _peerId = peerId;
+    _isExtension = isExtension;
     _remotePeerId = remotePeerId;
     _chainId = chainId;
     final bridgeUri =
@@ -222,6 +233,9 @@ class WCClient {
       customClient: customClient,
     );
     _webSocket = new IOWebSocketChannel(ws);
+/*
+    _webSocket = WebSocketChannel.connect(bridgeUri);
+*/
     _isConnected = true;
     if (fromSessionStore) {
       onConnect?.call();
@@ -269,7 +283,7 @@ class WCClient {
   _listen() {
     _socketStream.listen(
       (event) async {
-        // print('DATA: $event ${event.runtimeType}');
+        print('DATA: $event ${event.runtimeType}');
         final Map<String, dynamic> decoded = json.decode("$event");
         // print('DECODED: $decoded ${decoded.runtimeType}');
         final socketMessage = WCSocketMessage.fromJson(jsonDecode("$event"));
@@ -327,8 +341,15 @@ class WCClient {
         break;
       case WCMethod.SESSION_UPDATE:
         final param = WCSessionUpdate.fromJson(request.params!.first);
-        // print('SESSION_UPDATE $param');
+        print('SESSION_UPDATE $param');
+        if (param.chainId != null) {
+          onSessionUpdate?.call(request.id, param.chainId!);
+        }
         if (!param.approved) {
+          if (param.accounts == null) {
+            onDisconnect?.call(
+                WebSocketStatus.noStatusReceived, "Disconnected by dApp");
+          }
           killSession();
         }
         break;
