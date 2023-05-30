@@ -93,7 +93,7 @@ class WCClient {
     required WCPeerMeta peerMeta,
     HttpClient? customHttpClient,
     bool isExtension = false,
-  }) {
+  }) async {
     _connect(
       session: session,
       isExtension: isExtension,

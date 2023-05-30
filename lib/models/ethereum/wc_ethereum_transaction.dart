@@ -11,8 +11,6 @@ class WCEthereumTransaction {
   final String? maxFeePerGas;
   final String? maxPriorityFeePerGas;
   final String? gas;
-  final String? maxPriorityFeePerGas;
-  final String? maxFeePerGas;
   final String? gasLimit;
   final String? value;
   final String? data;
